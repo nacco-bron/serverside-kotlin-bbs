@@ -6,6 +6,8 @@ import com.example.app.bbs.domain.repository.ArticleRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.util.*
@@ -26,7 +28,17 @@ class ArticleController {
 
     //投稿機能
     @PostMapping("/")
-    fun registerArticle(@ModelAttribute articleRequest: ArticleRequest,redirectAttributes: RedirectAttributes): String{
+    fun registerArticle(@Validated @ModelAttribute articleRequest: ArticleRequest,
+                        result: BindingResult,
+                        redirectAttributes: RedirectAttributes): String{
+
+        if (result.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", result)
+            redirectAttributes.addFlashAttribute("request", articleRequest)
+
+            return "redirect:/"
+        }
+
         articleRepository.save(
                 Article(
                         articleRequest.id,
@@ -44,8 +56,17 @@ class ArticleController {
 
     //投稿一覧表示
     @GetMapping("/")
-    fun getArticleList(model: Model): String{
+    fun getArticleList(@ModelAttribute articleRequest: ArticleRequest,model: Model): String{
         model.addAttribute("articles", articleRepository.findAll())
+
+        if (model.containsAttribute("errors")){
+            val key: String = BindingResult.MODEL_KEY_PREFIX + "articleRequest"
+            model.addAttribute(key, model.asMap()["errors"])
+        }
+
+        if (model.containsAttribute("request")){
+            model.addAttribute("articleRequest", model.asMap()["request"])
+        }
 
         return "index"
     }

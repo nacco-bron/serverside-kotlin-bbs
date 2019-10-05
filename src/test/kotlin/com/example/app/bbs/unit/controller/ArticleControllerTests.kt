@@ -28,6 +28,23 @@ class ArticleControllerTests {
     }
 
     @Test
+    fun registerArticleRequestErrorTest(){
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/")
+                        .param("name","")
+                        .param("title","")
+                        .param("contents","")
+                        .param("articleKey","")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/"))
+                .andExpect(flash().attributeExists<String>("errors"))
+                .andExpect(flash().attributeExists<String>("request"))
+    }
+
+
+
+    @Test
     fun registerArticleTest(){
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/")
