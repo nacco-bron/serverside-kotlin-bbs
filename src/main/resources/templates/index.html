@@ -5,7 +5,7 @@
     <title>サンプル掲示板</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script src="js/index.js"></script>
+    <script src="/js/index.js"></script>
 </head>
 <body>
     <h1 class="text-center h3 mt-3 mb-4">サンプル掲示板</h1>
@@ -17,12 +17,12 @@
                     <table class="table table-bordered">
                         <tbody>
                         <tr>
-                            <th>名前</th>
-                            <td><input class="form-control" type="text" name="name" size="50"></td>
+                            <th>タイトル</th>
+                            <td><input class="form-control" type="text" name="title" size="50"></td>
                         </tr>
                         <tr>
-                            <th>題名</th>
-                            <td><input class="form-control" type="text" name="title" size="50"></td>
+                            <th>名前</th>
+                            <td><input class="form-control" type="text" name="name" size="50"></td>
                         </tr>
                         <tr>
                             <th>内容</th>
@@ -40,8 +40,8 @@
                         <tfoot>
                         <tr>
                             <td colspan="2" class="text-right">
-                                <button type="reset" class="btn btn-light">リセット</button>
                                 <button type="submit" class="btn btn-info">　送信　</button>
+                                <button type="reset" class="btn btn-light">リセット</button>
                             </td>
                         </tr>
                         </tfoot>
@@ -61,10 +61,16 @@
                     <thead>
                     <tr class="table-danger">
                         <th>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" name="article_check" th:data-id="*{id}" th:text="*{id} + '. '+ *{title}">
-                                </label>
+                            <div class="row">
+                                <div class="form-check col-sm">
+                                    <p class="m-0" th:data-id="*{id}" th:text="*{title}"></p>
+                                </div>
+                                <div class="col-sm text-right">
+                                    <form th:action="@{/}" th:method="get" th:name="'form_change_article_'+*{id}">
+                                        <button type="button" class="btn btn-info btn-sm" th:attr="onclick='changeArticleSubmit(\'update\',this,' + *{id} + ')'">　編集　</button>
+                                        <button type="button" class="btn btn-secondary btn-sm"  th:attr="onclick='changeArticleSubmit(\'delete\',this,' + *{id} + ')'">　削除　</button>
+                                    </form>
+                                </div>
                             </div>
                         </th>
                     </tr>
@@ -72,30 +78,18 @@
                     <tbody>
                     <tr>
                         <th>
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-sm">名前：<span th:text="*{name}"></span></div>
-                                    <div class="col-sm">投稿日時：<span th:text="${#dates.format(article.registerAt,'yyyy/MM/dd HH:mm:ss')}"></span></div>
-                                </div>
+                            <div class="row">
+                                <div class="col-sm">名前：<span th:text="*{name}"></span></div>
+                                <div class="col-sm">投稿日時：<span th:text="${#dates.format(article.registerAt,'yyyy/MM/dd HH:mm:ss')}"></span></div>
                             </div>
-                         </th>
+                        </th>
                     </tr>
                     <tr>
                         <td>
-                            <pre th:text="*{contents}"></pre>
+                            <p class="text-break" th:text="*{contents}"></p>
                         </td>
                     </tr>
                     </tbody>
-                    <tfoot>
-                    <tr>
-                        <td class="text-right">
-                            <form th:action="@{/}" th:method="get" th:name="'form_change_article_'+*{id}">
-                                <button type="button" class="btn btn-info btn-sm" onclick="changeArticleSubmit('update',this)">　編集　</button>
-                                <button type="button" class="btn btn-danger btn-sm" >　削除　</button>
-                            </form>
-                        </td>
-                    </tr>
-                    </tfoot>
                 </table>
             </div>
             <div class="col"></div>

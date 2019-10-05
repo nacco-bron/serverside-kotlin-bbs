@@ -71,4 +71,124 @@ class ArticleControllerTests {
                 .andExpect(view().name("edit"))
     }
 
+    @Test
+    fun updateArticleNotExistsArticleTest(){
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/update")
+                        .param("id", "0")
+                        .param("name", "test")
+                        .param("title", "test")
+                        .param("contents", "test")
+                        .param("articleKey", "err.")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/"))
+    }
+
+    @Test
+    @Sql(statements = ["INSERT INTO article (name, title, contents, article_key, register_at, update_at) VALUES ('test', 'test', 'test', 'test', now(), now());"])
+    fun updateArticleNotMatchArticleKeyTest(){
+        val latestArticle: Article = target.articleRepository.findAll().last()
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/update")
+                        .param("id", latestArticle.id.toString())
+                        .param("name", latestArticle.name)
+                        .param("title", latestArticle.title)
+                        .param("contents", latestArticle.contents)
+                        .param("articleKey", "err.")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/edit/${latestArticle.id.toString()}"))
+    }
+
+    @Test
+    @Sql(statements = ["INSERT INTO article (name, title, contents, article_key, register_at, update_at) VALUES ('test', 'test', 'test', 'test', now(), now());"])
+    fun updateArticleExistsArticleTest(){
+        val latestArticle: Article = target.articleRepository.findAll().last()
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/update")
+                        .param("id", latestArticle.id.toString())
+                        .param("name", latestArticle.name)
+                        .param("title", latestArticle.title)
+                        .param("contents", latestArticle.contents)
+                        .param("articleKey", latestArticle.articleKey)
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/"))
+    }
+
+    @Test
+    fun getDeleteConfirmNotExistsIdTest(){
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/delete/confirm/0")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/"))
+
+    }
+
+    @Test
+    @Sql(statements = ["INSERT INTO article (name, title, contents, article_key) VALUES ('test', 'test', 'test', 'test');"])
+    fun getDeleteConfirmExistsIdTest(){
+        val latestArticle: Article = target.articleRepository.findAll().last()
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/delete/confirm/${latestArticle.id.toString()}")
+        )
+                .andExpect(status().isOk)
+                .andExpect(view().name("delete_confirm"))
+    }
+
+    @Test
+    fun deleteArticleNotExistsArticleTest(){
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/delete")
+                        .param("id", "0")
+                        .param("name", "test")
+                        .param("title", "test")
+                        .param("contents", "test")
+                        .param("articleKey", "err.")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/"))
+    }
+
+    @Test
+    @Sql(statements = ["INSERT INTO article (name, title, contents, article_key, register_at, update_at) VALUES ('test', 'test', 'test', 'test', now(), now());"])
+    fun deleteArticleNotMatchArticleKeyTest(){
+        val latestArticle: Article = target.articleRepository.findAll().last()
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/delete")
+                        .param("id", latestArticle.id.toString())
+                        .param("name", latestArticle.name)
+                        .param("title", latestArticle.title)
+                        .param("contents", latestArticle.contents)
+                        .param("articleKey", "err.")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/delete/confirm/${latestArticle.id.toString()}"))
+    }
+
+    @Test
+    @Sql(statements = ["INSERT INTO article (name, title, contents, article_key, register_at, update_at) VALUES ('test', 'test', 'test', 'test', now(), now());"])
+    fun deleteArticleExistArticleTest(){
+        val latestArticle: Article = target.articleRepository.findAll().last()
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/delete")
+                        .param("id", latestArticle.id.toString())
+                        .param("name", latestArticle.name)
+                        .param("title", latestArticle.title)
+                        .param("contents", latestArticle.contents)
+                        .param("articleKey", latestArticle.articleKey)
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/"))
+
+    }
+
+
 }
