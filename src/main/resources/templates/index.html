@@ -13,6 +13,7 @@
         <div class="row">
             <div class="col"></div>
             <div class="col-8">
+
                 <form th:action="@{/}" th:method="post">
                     <table class="table table-bordered">
                         <tbody>
@@ -48,6 +49,7 @@
                     </table>
 
                 </form>
+                <div th:class="'alert ' + *{alert_class}" role="alert" th:id="flash-message" th:if="${message}" th:text="${message}"></div>
             </div>
             <div class="col"></div>
         </div>
