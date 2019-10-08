@@ -81,13 +81,33 @@ class ArticleController {
             return "redirect:/"
         }
 
-        model.addAttribute("article", articleRepository.findById(id))
+        if (model.containsAttribute("request")){
+            model.addAttribute("article", model.asMap()["request"])
+        } else {
+            model.addAttribute("article", articleRepository.findById(id).get())
+        }
+
+        if (model.containsAttribute("errors")){
+            val key: String = BindingResult.MODEL_KEY_PREFIX + "article"
+            model.addAttribute(key, model.asMap()["errors"])
+        }
+
         return "edit"
     }
 
     //更新機能
     @PostMapping("/update")
-    fun updateArticle(articleRequest: ArticleRequest, redirectAttributes: RedirectAttributes): String{
+    fun updateArticle(@Validated articleRequest: ArticleRequest,
+                      result: BindingResult,
+                      redirectAttributes: RedirectAttributes): String{
+
+        if (result.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", result)
+            redirectAttributes.addFlashAttribute("request", articleRequest)
+
+            return "redirect:/edit/${articleRequest.id}"
+        }
+
         if (!articleRepository.existsById(articleRequest.id)){
             redirectAttributes.addFlashAttribute("message",MESSAGE_ARTICLE_DOES_NOT_EXISTS)
             redirectAttributes.addFlashAttribute("alert_class",ALERT_CLASS_ERROR)
@@ -126,12 +146,27 @@ class ArticleController {
 
         model.addAttribute("article", articleRepository.findById(id).get())
 
+        val key: String = BindingResult.MODEL_KEY_PREFIX + "article"
+        if (model.containsAttribute("errors")){
+            model.addAttribute(key, model.asMap()["errors"])
+        }
+
         return "delete_confirm"
     }
 
     //削除機能
     @PostMapping("/delete")
-    fun deleteArticle(@ModelAttribute articleRequest: ArticleRequest, redirectAttributes: RedirectAttributes): String{
+    fun deleteArticle(@Validated @ModelAttribute articleRequest: ArticleRequest,
+                      result: BindingResult,
+                      redirectAttributes: RedirectAttributes): String{
+
+        if (result.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", result)
+            redirectAttributes.addFlashAttribute("request", articleRequest)
+
+            return "redirect:/delete/confirm/${articleRequest.id}"
+        }
+
         if (!articleRepository.existsById(articleRequest.id)){
             redirectAttributes.addFlashAttribute("message",MESSAGE_ARTICLE_DOES_NOT_EXISTS)
             redirectAttributes.addFlashAttribute("alert_class",ALERT_CLASS_ERROR)

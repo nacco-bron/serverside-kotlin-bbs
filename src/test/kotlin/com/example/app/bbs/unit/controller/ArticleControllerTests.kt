@@ -42,8 +42,6 @@ class ArticleControllerTests {
                 .andExpect(flash().attributeExists<String>("request"))
     }
 
-
-
     @Test
     fun registerArticleTest(){
         mockMvc.perform(
@@ -69,6 +67,17 @@ class ArticleControllerTests {
                 .andExpect(status().isOk)
                 .andExpect(model().attributeExists("articles"))
                 .andExpect(view().name("index"))
+    }
+
+    @Test
+    fun updateArticleRequestErrorTest(){
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/update")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/edit/0"))
+                .andExpect(flash().attributeExists<String>("errors"))
+                .andExpect(flash().attributeExists<String>("request"))
     }
 
     @Test
@@ -167,6 +176,17 @@ class ArticleControllerTests {
                 .andExpect(flash().attribute<String>("message",target.MESSAGE_ARTICLE_DOES_NOT_EXISTS))
                 .andExpect(flash().attributeExists<String>("alert_class"))
                 .andExpect(flash().attribute<String>("alert_class",target.ALERT_CLASS_ERROR))
+    }
+
+    @Test
+    fun deleteArticleRequestErrorTest(){
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/delete")
+        )
+                .andExpect(status().is3xxRedirection)
+                .andExpect(view().name("redirect:/delete/confirm/0"))
+                .andExpect(flash().attributeExists<String>("errors"))
+                .andExpect(flash().attributeExists<String>("request"))
     }
 
     @Test

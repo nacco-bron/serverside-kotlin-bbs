@@ -29,9 +29,10 @@
                             <td>
                                 <p th:text="*{contents}"></p>
                                 <div class="form-group row mt-3">
-                                    <label class="col-sm-2 col-form-label">投稿KEY</label>
-                                    <div class="col-sm-5">
-                                        <input type="text" class="form-control" name="articleKey" maxlength="4">
+                                    <label class="col-sm-3 col-form-label">投稿KEY</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" name="articleKey" value="" maxlength="4">
+                                        <p th:if="${#fields.hasErrors('articleKey')}" class="text-danger m-0" th:errors="*{articleKey}"></p>
                                     </div>
                                 </div>
                             </td>
@@ -47,6 +48,9 @@
                         </tfoot>
                     </table>
                     <input type="hidden" name="id" th:field="*{id}">
+                    <input type="hidden" name="name" th:field="*{name}">
+                    <input type="hidden" name="title" th:field="*{title}">
+                    <input type="hidden" name="contents" th:field="*{contents}">
                 </form>
                 <div th:class="'alert ' + *{alert_class}" role="alert" th:id="flash-message" th:if="${message}" th:text="${message}"></div>
             </div>

@@ -20,25 +20,25 @@
                         <tr>
                             <th>タイトル</th>
                             <td>
-                                <input class="form-control" type="text" name="title" size="50">
+                                <input class="form-control" type="text" name="title" size="50" th:value="*{title}">
                                 <p th:if="${#fields.hasErrors('title')}" class="text-danger m-0" th:errors="*{title}"></p>
                             </td>
                         </tr>
                         <tr>
                             <th>名前</th>
                             <td>
-                                <input class="form-control" type="text" name="name" size="50">
+                                <input class="form-control" type="text" name="name" size="50" th:value="*{name}">
                                 <p th:if="${#fields.hasErrors('name')}" class="text-danger m-0" th:errors="*{name}"></p>
                             </td>
                         </tr>
                         <tr>
                             <th>内容</th>
                             <td>
-                                <textarea class="form-control" name="contents" rows="4" cols="65" maxlength="500"></textarea>
+                                <textarea class="form-control" name="contents" rows="4" cols="65" maxlength="500" th:text="*{contents}"></textarea>
                                 <p th:if="${#fields.hasErrors('contents')}" class="text-danger m-0" th:errors="*{contents}"></p>
                                 <div class="form-group row mt-3">
-                                    <label class="col-sm-2 col-form-label">投稿KEY</label>
-                                    <div class="col-sm-5">
+                                    <label class="col-sm-3 col-form-label">投稿KEY</label>
+                                    <div class="col-sm-6">
                                         <input type="text" class="form-control" name="articleKey" maxlength="4">
                                         <p th:if="${#fields.hasErrors('articleKey')}" class="text-danger m-0" th:errors="*{articleKey}"></p>
                                     </div>
