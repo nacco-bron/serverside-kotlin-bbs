@@ -9,7 +9,7 @@ import org.springframework.validation.Validator
 @Configuration
 class WebConfig : WebMvcConfigurer {
 
-    override fun getValidator(): Validator? {
+    override fun getValidator(): Validator {
         val validator = LocalValidatorFactoryBean()
         val messageSource = ReloadableResourceBundleMessageSource()
         // 任意のファイル名に変更

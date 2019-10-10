@@ -65,7 +65,7 @@ class ArticleControllerTests {
                 MockMvcRequestBuilders.get("/")
         )
                 .andExpect(status().isOk)
-                .andExpect(model().attributeExists("articles"))
+                .andExpect(model().attributeExists("page"))
                 .andExpect(view().name("index"))
     }
 

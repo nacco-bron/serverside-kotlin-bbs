@@ -63,7 +63,42 @@
         </div>
 
     </div>
-    <div class="container" th:each="article:${articles}" th:object="${article}">
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div th:if="${page.totalPages}" class="col-8">
+                <div class="mx-auto text-center mt-2">
+                    <span th:text="${page.number+1} + ' / ' + ${page.totalPages}">1/3</span>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li th:class="${page.first} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.first}? 'true' : 'false'" th:href="${not page.first}? @{${url}(page=0)} : '#'" class="page-link" aria-label="First">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${page.first} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.first}? 'true' : 'false'" th:href="${not page.first}? @{${url}(page=(${page.number}-1))} : '#'" class="page-link" aria-label="Previous">
+                                <span>&lsaquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${page.last} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.last}? 'true' : 'false'" th:href="${not page.last}? @{${url}(page=(${page.number}+1))} : '#'" class="page-link" aria-label="Next">
+                                <span>&rsaquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${page.last} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.last}? 'true' : 'false'" th:href="${not page.last}? @{${url}(page=(${page.totalPages}-1))} : '#'" class="page-link" aria-label="Last">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <div class="container" th:each="article:${page}" th:object="${article}">
         <div class="row">
             <div class="col"></div>
             <div class="col-8">
@@ -101,6 +136,41 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div th:if="${page.totalPages}" class="col-8">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li th:class="${page.first} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.first}? 'true' : 'false'" th:href="${not page.first}? @{${url}(page=0)} : '#'" class="page-link" aria-label="First">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${page.first} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.first}? 'true' : 'false'" th:href="${not page.first}? @{${url}(page=(${page.number}-1))} : '#'" class="page-link" aria-label="Previous">
+                                <span>&lsaquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${page.last} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.last}? 'true' : 'false'" th:href="${not page.last}? @{${url}(page=(${page.number}+1))} : '#'" class="page-link" aria-label="Next">
+                                <span>&rsaquo;</span>
+                            </a>
+                        </li>
+                        <li th:class="${page.last} ? 'page-item disabled' : 'page-item'">
+                            <a th:aria-disabled="${page.last}? 'true' : 'false'" th:href="${not page.last}? @{${url}(page=(${page.totalPages}-1))} : '#'" class="page-link" aria-label="Last">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="mx-auto text-center mb-2">
+                    <span th:text="${page.number+1} + ' / ' + ${page.totalPages}">1/3</span>
+                </div>
             </div>
             <div class="col"></div>
         </div>

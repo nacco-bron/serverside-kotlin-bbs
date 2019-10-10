@@ -4,6 +4,10 @@ import com.example.app.bbs.app.request.ArticleRequest
 import com.example.app.bbs.domain.entity.Article
 import com.example.app.bbs.domain.repository.ArticleRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -22,9 +26,28 @@ class ArticleController {
     val ALERT_CLASS_SUCCESS = "alert-success"
     val ALERT_CLASS_ERROR = "alert-danger"
     val MESSAGE_DELETE_NORMAL = "削除しました。"
+    val PAGE_SIZE: Int = 10
 
     @Autowired
     lateinit var articleRepository: ArticleRepository
+
+    //テストデータ登録
+    @GetMapping("/seed")
+    @ResponseBody
+    fun seed(): String{
+        for (i in 1..50){
+            var article = Article()
+            article.name = "name_$i"
+            article.title = "title_$i"
+            article.contents = "contents_$i"
+            article.articleKey = "1234"
+            articleRepository.save(article)
+        }
+
+        return "Finish"
+    }
+
+
 
     //投稿機能
     @PostMapping("/")
@@ -56,7 +79,21 @@ class ArticleController {
 
     //投稿一覧表示
     @GetMapping("/")
-    fun getArticleList(@ModelAttribute articleRequest: ArticleRequest,model: Model): String{
+    fun getArticleList(@ModelAttribute articleRequest: ArticleRequest,
+                       @RequestParam(
+                               value = "page",
+                               defaultValue = "0",
+                               required = false
+                       ) page: Int,
+                       model: Model): String{
+
+        val pageable: Pageable = PageRequest.of(
+                page,
+                this.PAGE_SIZE,
+                Sort(Sort.Direction.DESC,"updateAt")
+                        .and(Sort(Sort.Direction.ASC,"id"))
+        )
+
         model.addAttribute("articles", articleRepository.findAll())
 
         if (model.containsAttribute("errors")){
@@ -67,6 +104,9 @@ class ArticleController {
         if (model.containsAttribute("request")){
             model.addAttribute("articleRequest", model.asMap()["request"])
         }
+
+        val articles: Page<Article> = articleRepository.findAll(pageable)
+        model.addAttribute("page",articles)
 
         return "index"
     }
