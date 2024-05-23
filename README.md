@@ -5,6 +5,3 @@
 「[入門!実践!サーバーサイドKotlin](https://booth.pm/ja/items/1560389)」の写経です。
 
 若干アレンジを加えている箇所があります。
-
-## Author
-Nacco([@climbing_nacco](https://twitter.com/climbing_nacco))
